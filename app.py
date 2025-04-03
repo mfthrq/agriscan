@@ -20,6 +20,20 @@ MODEL_URL = f"https://drive.google.com/uc?id={FILE_ID}"
 if not os.path.exists(MODEL_PATH):
     with st.spinner("Mengunduh model dari Google Drive..."):
         gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+        
+
+# Menambahkan gambar banner tanaman di bagian atas
+banner_image_url = "https://barossa.coop/wp-content/uploads/2022/07/indoor-2-1080-500-px-1080-400-px-1080-300-px-2.png"  # Gantilah dengan path gambar banner Anda
+response = requests.get(banner_image_url)  # Mengunduh gambar dari URL
+banner_image = Image.open(BytesIO(response.content))  # Membuka gambar yang telah diunduh
+
+# Crop gambar (ambil lebar penuh dan sesuaikan tinggi)
+width, height = banner_image.size
+crop_height = 150  # Sesuaikan tinggi crop sesuai keinginan Anda
+cropped_banner_image = banner_image.crop((0, 0, width, crop_height))  # Crop bagian atas dengan tinggi yang ditentukan
+
+# Tampilkan gambar banner yang telah dicrop
+st.image(cropped_banner_image, use_container_width=True)
 
 # Load model
 model = tf.keras.models.load_model(MODEL_PATH)
