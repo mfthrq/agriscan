@@ -81,7 +81,7 @@ if uploaded_image is not None:
                 prediction, confidence = predict_image_class(model, uploaded_image, class_indices)
             
             st.markdown(f"<h3 style='color: #5fff3f;'>✅ Hasil Prediksi: {prediction}</h3>", unsafe_allow_html=True)
-            st.progress(confidence / 100)
+            st.progress(min(max(confidence / 100, 0), 1))  # Membatasi nilai antara 0 dan 1
             st.write(f"📊 **Kepercayaan Model: {confidence:.2f}%**")
             
             if confidence < 50:
