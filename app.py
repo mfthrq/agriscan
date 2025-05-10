@@ -6,20 +6,11 @@ import streamlit as st
 from PIL import Image
 import requests
 from io import BytesIO
-import gdown
 
 st.set_page_config(page_title="Agriscan", layout="wide")
 
-# URL Google Drive (ganti dengan ID file model yang benar)
-FILE_ID = "1UAfToEvmg-JC4xxl3ivnkMIthecR6OKC"  # Ganti dengan ID file dari Google Drive
 MODEL_PATH = "model-prediksi-penyakit-tanaman-buah-subtropis.h5"
-MODEL_URL = f"https://drive.google.com/uc?id={FILE_ID}"
 
-# Cek dan unduh model jika belum ada
-if not os.path.exists(MODEL_PATH):
-    with st.spinner("Mengunduh model dari Google Drive..."):
-        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-        
 banner_image_path = "banner.png"  # Gantilah dengan path gambar banner Anda
 
 # Buka gambar dengan PIL
