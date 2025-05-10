@@ -69,7 +69,7 @@ with st.expander("🌿 Daftar Tanaman Buah yang Dapat Diprediksi:"):
         st.markdown(f"<p style='font-size: 13px;'>{plant}</p>", unsafe_allow_html=True)
 
 # File Uploader
-uploaded_image = st.file_uploader("📤 Unggah gambar daun buah untuk mengetahui penyakitnya!", type=["jpg", "jpeg", "png"])
+uploaded_image = st.file_uploader("📤 Unggah gambar daun buah untuk mengetahui penyakitnya!", type=["jpg", "jpeg", "png", "JPG", "JPEG", "PNG"])
 
 st.markdown("""
     <p style="font-size: 14px;">
