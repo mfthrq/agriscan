@@ -11,8 +11,8 @@ import gdown
 st.set_page_config(page_title="Agriscan", layout="wide")
 
 # URL Google Drive (ganti dengan ID file model yang benar)
-FILE_ID = "1qL5Wvm8IiG3qb5HJTu9rAV5xiQyEvMjl"  # Ganti dengan ID file dari Google Drive
-MODEL_PATH = "model-prediksi-penyakit-tanaman.h5"
+FILE_ID = "1UAfToEvmg-JC4xxl3ivnkMIthecR6OKC"  # Ganti dengan ID file dari Google Drive
+MODEL_PATH = "model-prediksi-penyakit-tanaman-buah-subtropis.h5"
 MODEL_URL = f"https://drive.google.com/uc?id={FILE_ID}"
 
 # Cek dan unduh model jika belum ada
