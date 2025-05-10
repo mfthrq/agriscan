@@ -50,11 +50,15 @@ plant_list = [
 
 # Fungsi untuk memproses gambar
 def preprocess_image(image_file, target_size=(224, 224)):
-    img = Image.open(image_file)
-    img = img.resize(target_size)
-    img_array = np.array(img) / 255.0  # Normalisasi
-    img_array = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimensi
-    return img_array
+    try:
+        img = Image.open(image_file)
+        img = img.resize(target_size)
+        img_array = np.array(img) / 255.0  # Normalisasi
+        img_array = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimensi
+        return img_array
+    except Exception as e:
+        st.error(f"❌ Gagal memproses gambar: {e}")
+        return None
 
 # Fungsi untuk prediksi
 def predict_image_class(model, image_file, class_indices):
@@ -84,31 +88,47 @@ st.markdown("""
     </p>
 """, unsafe_allow_html=True)
 
-# Cek apakah ada file yang diunggah
 if uploaded_image is not None:
     # Konversi ukuran file ke MB
     file_size_mb = uploaded_image.size / (1024 * 1024)  # dari byte ke MB
-    
+
     # Batasi ukuran file maksimal 5 MB
     if file_size_mb > 5:
         st.error("⚠️ Ukuran file terlalu besar! Maksimal 5 MB.")
     else:
-        st.markdown("---")
-        image = Image.open(uploaded_image)
+        # 🔽 Tambahkan validasi ekstensi di sini
+        allowed_extensions = ["jpg", "jpeg", "png"]
+        filename = uploaded_image.name.lower()
 
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            resized_img = image.resize((200, 200))
-            st.image(resized_img, caption="📷 Gambar yang Diupload", use_container_width=True)
+        if not any(filename.endswith(ext) for ext in allowed_extensions):
+            st.error("⚠️ Ekstensi file tidak didukung. Hanya JPG, JPEG, PNG.")
+        else:
+            st.markdown("---")
+            # Proses gambar
+            image = Image.open(uploaded_image)
 
-        with col2:
-            st.markdown("### 🔍 Analisis Model")
-            if st.button('🔎 Prediksi Sekarang'):
-                with st.spinner("🔄 Sedang menganalisis gambar..."):
-                    prediction, confidence = predict_image_class(model, uploaded_image, class_indices)
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                resized_img = image.resize((200, 200))
+                st.image(resized_img, caption="📷 Gambar yang Diupload", use_container_width=True)
 
-                st.markdown(f"<h3 style='color: #5fff3f;'>✅ Hasil Prediksi: {prediction}</h3>", unsafe_allow_html=True)
-                st.write(f"📊 **Kepercayaan Model: {confidence:.2f}%**")
+            with col2:
+                st.markdown("### 🔍 Analisis Model")
+                if st.button('🔎 Prediksi Sekarang'):
+                    with st.spinner("🔄 Sedang menganalisis gambar..."):
+                        # Cek apakah gambar berhasil diproses
+                        preprocessed_img = preprocess_image(uploaded_image)
 
-                if confidence < 50:
-                    st.warning("⚠️ Model kurang yakin dengan prediksi ini. Coba unggah gambar lain dengan kualitas lebih baik.")
+                        if preprocessed_img is None:
+                            st.error("❌ Gambar tidak valid. Coba unggah gambar lain.")
+                        else:
+                            prediction, confidence = predict_image_class(model, uploaded_image, class_indices)
+
+                            if prediction == "Error":
+                                st.error("❌ Terjadi kesalahan saat memproses gambar. Pastikan gambar valid.")
+                            else:
+                                st.markdown(f"<h3 style='color: #5fff3f;'>✅ Hasil Prediksi: {prediction}</h3>", unsafe_allow_html=True)
+                                st.write(f"📊 **Kepercayaan Model: {confidence:.2f}%**")
+
+                                if confidence < 50:
+                                    st.warning("⚠️ Model kurang yakin dengan prediksi ini. Coba unggah gambar lain dengan kualitas lebih baik.")
